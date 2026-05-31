@@ -1,0 +1,57 @@
+{
+  "version": "1.0",
+  "sessions": [
+    {
+      "id": "manual-test-session-001",
+      "source": "import",
+      "startedAt": "2026-05-31T10:00:00Z",
+      "endedAt": "2026-05-31T10:12:00Z",
+      "messages": [
+        {
+          "id": "manual-test-msg-001",
+          "sessionId": "manual-test-session-001",
+          "role": "user",
+          "content": "I am building a React and TypeScript component library. I already created a Button component, but I need to understand the tradeoffs between props, variants, and composition. Please explain the architecture and include how I should test it with Jest.",
+          "timestamp": "2026-05-31T10:00:00Z",
+          "tokenCount": 54,
+          "estimatedCostUSD": 0.0002,
+          "source": "import"
+        },
+        {
+          "id": "manual-test-msg-002",
+          "sessionId": "manual-test-session-001",
+          "role": "assistant",
+          "content": "Use a small typed prop surface for stable API guarantees, then use composition for advanced layout cases. For variants, define a constrained union such as primary, secondary, and danger so styling is predictable. Test rendering, click behavior, disabled behavior, and class or data-state output with Jest and React Testing Library.",
+          "timestamp": "2026-05-31T10:03:00Z",
+          "tokenCount": 67,
+          "estimatedCostUSD": 0.0003,
+          "source": "import"
+        },
+        {
+          "id": "manual-test-msg-003",
+          "sessionId": "manual-test-session-001",
+          "role": "user",
+          "content": "I tried a variant prop, but I am worried it will become too large. What boundary should I use before moving behavior into separate components? Also, how would I test accessibility states?",
+          "timestamp": "2026-05-31T10:07:00Z",
+          "tokenCount": 39,
+          "estimatedCostUSD": 0.0001,
+          "source": "import"
+        },
+        {
+          "id": "manual-test-msg-004",
+          "sessionId": "manual-test-session-001",
+          "role": "assistant",
+          "content": "Keep variants for visual intent only. When a variant starts changing structure, data flow, or interaction behavior, create a separate component or expose a slot/composition pattern. For accessibility tests, assert the accessible role, name, disabled state, focus behavior, keyboard activation, and aria attributes when applicable.",
+          "timestamp": "2026-05-31T10:12:00Z",
+          "tokenCount": 65,
+          "estimatedCostUSD": 0.0003,
+          "source": "import"
+        }
+      ],
+      "totalInputTokens": 93,
+      "totalOutputTokens": 132,
+      "totalCostUSD": 0.0009,
+      "status": "complete"
+    }
+  ]
+}

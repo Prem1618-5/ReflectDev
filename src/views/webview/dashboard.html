@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" 
+        content="default-src 'none'; 
+                 style-src {{cspSource}} 'nonce-{{nonce}}'; 
+                 script-src 'nonce-{{nonce}}' https://cdnjs.cloudflare.com; 
+                 font-src {{cspSource}}; 
+                 img-src {{cspSource}} data:;">
+  <title>ReflectDev Dashboard</title>
+  <link rel="stylesheet" href="{{cssUri}}">
+</head>
+<body>
+
+  <!-- ═══════════════════ HEADER ═══════════════════ -->
+  <header class="rd-header">
+    <div class="rd-header-left">
+      <span class="rd-logo">⚡</span>
+      <h1 class="rd-title">ReflectDev</h1>
+      <span class="rd-subtitle">Developer Intelligence</span>
+    </div>
+    <div class="rd-header-right">
+      <span class="rd-session-count" id="sessionCount">0 sessions</span>
+      <button class="rd-btn rd-btn-secondary" id="refreshBtn" title="Refresh data">
+        ↻ Refresh
+      </button>
+      <button class="rd-btn rd-btn-primary" id="exportBtn" title="Export report card">
+        📄 Export
+      </button>
+    </div>
+  </header>
+
+  <!-- ═══════════════════ HERO ROW ═══════════════════ -->
+  <section class="rd-hero-row">
+
+    <!-- Overall Score Ring -->
+    <div class="rd-card rd-score-card">
+      <div class="rd-card-label">OVERALL SCORE</div>
+      <div class="rd-score-ring-container">
+        <svg class="rd-score-ring" viewBox="0 0 160 160" width="160" height="160">
+          <circle class="rd-ring-bg" cx="80" cy="80" r="70" />
+          <circle class="rd-ring-fill" id="scoreRing" cx="80" cy="80" r="70" 
+                  stroke-dasharray="439.82" stroke-dashoffset="439.82" />
+        </svg>
+        <div class="rd-score-text">
+          <span class="rd-score-number" id="overallScore">0</span>
+          <span class="rd-score-level" id="scoreLevel">—</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Score Breakdown Cards -->
+    <div class="rd-card rd-breakdown-card">
+      <div class="rd-card-label">SCORE BREAKDOWN</div>
+      <div class="rd-breakdown-grid">
+        <div class="rd-metric-card" id="knowledgeCard">
+          <div class="rd-metric-label">Knowledge</div>
+          <div class="rd-metric-value" id="knowledgeScore">0</div>
+          <div class="rd-metric-bar">
+            <div class="rd-metric-bar-fill" id="knowledgeBar"></div>
+          </div>
+        </div>
+        <div class="rd-metric-card" id="promptCard">
+          <div class="rd-metric-label">Prompt</div>
+          <div class="rd-metric-value" id="promptScore">0</div>
+          <div class="rd-metric-bar">
+            <div class="rd-metric-bar-fill" id="promptBar"></div>
+          </div>
+        </div>
+        <div class="rd-metric-card" id="tokenCard">
+          <div class="rd-metric-label">Tokens</div>
+          <div class="rd-metric-value" id="tokenScore">0<span class="rd-metric-unit">%</span></div>
+          <div class="rd-metric-bar">
+            <div class="rd-metric-bar-fill" id="tokenBar"></div>
+          </div>
+        </div>
+        <div class="rd-metric-card" id="depthCard">
+          <div class="rd-metric-label">Depth</div>
+          <div class="rd-metric-value" id="depthScore">0</div>
+          <div class="rd-metric-bar">
+            <div class="rd-metric-bar-fill" id="depthBar"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top Recommendations -->
+    <div class="rd-card rd-recs-card">
+      <div class="rd-card-label">TOP RECOMMENDATIONS</div>
+      <div class="rd-recs-list" id="recsList">
+        <div class="rd-empty-state">Import sessions to see recommendations</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ CHARTS ROW ═══════════════════ -->
+  <section class="rd-charts-row">
+    <div class="rd-card rd-chart-card">
+      <div class="rd-card-label">TECHNOLOGY RADAR</div>
+      <div class="rd-chart-container">
+        <canvas id="radarChart"></canvas>
+      </div>
+    </div>
+    <div class="rd-card rd-chart-card">
+      <div class="rd-card-label">SCORE OVER TIME</div>
+      <div class="rd-chart-container">
+        <canvas id="timelineChart"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ TOKEN DETAIL ROW ═══════════════════ -->
+  <section class="rd-token-row">
+    <div class="rd-card rd-token-card">
+      <div class="rd-card-label">TOKEN USAGE & COST</div>
+      <div class="rd-token-stats">
+        <div class="rd-token-stat">
+          <span class="rd-token-stat-value" id="totalTokens">0</span>
+          <span class="rd-token-stat-label">Total Tokens</span>
+        </div>
+        <div class="rd-token-stat">
+          <span class="rd-token-stat-value" id="totalCost">$0.00</span>
+          <span class="rd-token-stat-label">Est. Cost</span>
+        </div>
+        <div class="rd-token-stat">
+          <span class="rd-token-stat-value" id="efficiency">0%</span>
+          <span class="rd-token-stat-label">Efficiency</span>
+        </div>
+      </div>
+      <div class="rd-token-bar-chart">
+        <div class="rd-token-bar-row">
+          <span class="rd-token-bar-label">Input</span>
+          <div class="rd-token-bar-track">
+            <div class="rd-token-bar-fill rd-token-input" id="inputBar"></div>
+          </div>
+          <span class="rd-token-bar-value" id="inputTokens">0</span>
+        </div>
+        <div class="rd-token-bar-row">
+          <span class="rd-token-bar-label">Output</span>
+          <div class="rd-token-bar-track">
+            <div class="rd-token-bar-fill rd-token-output" id="outputBar"></div>
+          </div>
+          <span class="rd-token-bar-value" id="outputTokens">0</span>
+        </div>
+        <div class="rd-token-bar-row">
+          <span class="rd-token-bar-label">Waste</span>
+          <div class="rd-token-bar-track">
+            <div class="rd-token-bar-fill rd-token-waste" id="wasteBar"></div>
+          </div>
+          <span class="rd-token-bar-value" id="wastedTokens">0</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ SESSION TABLE ═══════════════════ -->
+  <section class="rd-sessions-row">
+    <div class="rd-card rd-sessions-card">
+      <div class="rd-card-label">RECENT SESSIONS</div>
+      <div class="rd-table-container">
+        <table class="rd-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Source</th>
+              <th>Messages</th>
+              <th>Score</th>
+              <th>Tokens</th>
+              <th>Cost</th>
+              <th>Technologies</th>
+            </tr>
+          </thead>
+          <tbody id="sessionsTableBody">
+            <tr>
+              <td colspan="7" class="rd-empty-cell">No sessions yet — import your chat history</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ SCRIPTS ═══════════════════ -->
+  <script nonce="{{nonce}}" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <script nonce="{{nonce}}" src="{{jsUri}}"></script>
+
+</body>
+</html>

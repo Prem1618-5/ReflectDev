@@ -1,0 +1,15 @@
+src/
+.vscode/
+.github/
+node_modules/
+**/*.test.ts
+**/*.map
+tsconfig.json
+webpack.config.js
+jest.config.js
+.eslintrc.js
+*.vsix
+DEPLOYMENT.md
+DEV_GUIDE.md
+PROMPT_SRS.md
+COMPACT_LOG.md
